@@ -44,7 +44,7 @@ private val unselectedContentColor = Color(0xFF999999)
 )
 @Composable
 fun MidAutumnHomeTab() {
-    val noteFolders = listOf("且喜人间好时节", "月是故乡明", "小饼如嚼月","中秋故事","zhuye")
+    val noteFolders = listOf("且喜人间好时节", "月是故乡明", "小饼如嚼月","中秋故事","zhuye","ai")
     val pagerState = rememberPagerState(initialPage = 4)
     val scope = rememberCoroutineScope()
 
@@ -107,6 +107,7 @@ private fun HorizontalPagerContent(
             2 -> MidAutumnFood()
             3 -> MidAutumnStory()
             4 -> Homepage()
+            5 -> AIMenuScreen()
         }
     }
 }
