@@ -1,5 +1,5 @@
 
-package com.google.ai.sample.feature.chat
+package com.example.project.AI.chat
 
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -42,13 +42,15 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.project.R
 
 import kotlinx.coroutines.launch
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun ChatRoute(
-    chatViewModel: ChatViewModel = viewModel(factory = GenerativeViewModelFactory)
+    chatViewModel: ChatViewModel = viewModel()
 ) {
     val chatUiState by chatViewModel.uiState.collectAsState()
     val listState = rememberLazyListState()
@@ -154,6 +156,7 @@ fun ChatBubbleItem(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageInput(
     onSendMessage: (String) -> Unit,
@@ -208,6 +211,8 @@ fun MessageInput(
 
 @Preview(showSystemUi = true)
 @Composable
-fun ChatScreen() {
-    MessageInput()
+fun ChatScreenPreview() {
+    MessageInput(onSendMessage = { /* 这里可以添加一个虚拟的发送消息函数 */ }) {
+        // 这里可以添加一个虚拟的重置滚动函数
+    }
 }

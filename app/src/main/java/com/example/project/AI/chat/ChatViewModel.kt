@@ -14,13 +14,10 @@
  * limitations under the License.
  */
 
-package com.google.ai.sample.feature.chat
+package com.example.project.AI.chat
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.ai.client.generativeai.GenerativeModel
-import com.google.ai.client.generativeai.type.asTextOrNull
-import com.google.ai.client.generativeai.type.content
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

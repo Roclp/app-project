@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.google.ai.sample.feature.chat
+package com.example.project.AI.chat
 
 import androidx.compose.runtime.toMutableStateList
 
