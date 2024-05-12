@@ -69,7 +69,14 @@ dependencies {
 //    implementation ("androidx.compose.ui:ui-tooling-preview:$compose_version")
     implementation ("androidx.lifecycle:lifecycle-runtime-ktx:2.3.1")
     implementation ("androidx.activity:activity-compose:1.3.1")
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.17.0")
+    implementation ("com.squareup.okhttp3:okhttp:4.9.1")
+    implementation ("org.json:json:20210307") // 根据需要选择版本
+    implementation ("com.fasterxml.jackson.core:jackson-databind:2.13.3")
+
+
+
+
+
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
