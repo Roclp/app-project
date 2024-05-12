@@ -1,6 +1,8 @@
 package com.example.project.MidAutumnTabViewPage
 
+import ChatViewModel
 import android.view.MenuItem
+import androidx.activity.ComponentActivity
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +23,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import com.example.project.AI.chat.ChatRoute
+
 import com.example.project.R
 
 
@@ -80,5 +87,56 @@ fun myAImenu(
 @Preview(showSystemUi = true)
 @Composable
 fun AIMenuScreenPreview() {
-    myAImenu()
+    NavAI()
+}
+
+@Composable
+fun NavAI() {
+    val navController = rememberNavController()
+
+    NavHost(navController = navController, startDestination = "menu") {
+        composable("menu") {
+            myAImenu(onItemClicked = { routeId ->
+                navController.navigate(routeId)
+            })
+        }
+        composable("summarize") {
+            val viewModel = ChatViewModel()
+            ChatRoute(viewModel)
+        }
+        composable("photo_reasoning") {
+            val viewModel = ChatViewModel()
+            ChatRoute(viewModel)
+        }
+        composable("chat") {
+            val viewModel = ChatViewModel()
+            ChatRoute(viewModel)
+        }
+    }
+}
+
+
+
+
+@Composable
+fun PhotoReasoningRoute() {
+    TODO("Not yet implemented")
+}
+
+
+
+@Composable
+fun SummarizeRoute() {
+    TODO("Not yet implemented")
+}
+
+@Composable
+fun MenuScreen(onItemClicked: Any) {
+
+}
+
+@Preview(showSystemUi = true)
+@Composable
+fun MainActivity() {
+    NavAI()
 }
