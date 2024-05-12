@@ -15,7 +15,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class lanxin {
 
@@ -29,6 +31,27 @@ public class lanxin {
         syncVivoGpt(args[0]);
     }
 
+    // 创建一个固定大小的线程池用于网络请求
+    private static final ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+    /**
+     * 异步执行POST请求并获取响应内容。
+     *
+     * @param prompt 提交给AI的prompt
+     * @return CompletableFuture代表异步操作，完成时返回响应内容
+     */
+    public static CompletableFuture<String> syncVivoGptAsync(String prompt) {
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                // 调用同步方法并返回结果
+                return syncVivoGpt(prompt);
+            } catch (Exception e) {
+                // 打印异常堆栈，返回错误信息
+                e.printStackTrace();
+                return "Error: " + e.getMessage();
+            }
+        }, executorService);
+    }
     public static String syncVivoGpt(String prompt) {
         Map<String, String> params = new HashMap<>();
         params.put("requestId", UUID.randomUUID().toString());
