@@ -4,6 +4,7 @@ import android.graphics.BlurMaskFilter
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -48,10 +49,13 @@ fun Moon(modifier: Modifier) {
     ).value
     BoxWithConstraints(modifier = modifier) {
         val canvasSize = minOf(maxWidth, maxHeight) - 40.dp
+        val textPadding = 20.dp // 文本与月亮图形的间距
+
         Canvas(
             modifier = Modifier
                 .size(canvasSize)
-                .align(Alignment.TopCenter)
+                .align(Alignment.TopEnd)
+                .offset(x = 100.dp)
         ) {
             drawMoonCircle(this, progress)
             drawIntoCanvas {
@@ -66,7 +70,9 @@ fun Moon(modifier: Modifier) {
         Text(
             text = getPhaseText(progress),
             color = Color(0xfff9dc60),
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .offset(x = 80.dp,y = 10.dp),
             style = MaterialTheme.typography.h5
         )
     }
