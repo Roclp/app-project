@@ -1,4 +1,7 @@
 package com.example.project
+import com.example.project.AI.chat.prompt1
+import com.example.project.AI.chat.prompt2
+import com.example.project.AI.chat.prompt3
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import org.json.JSONObject
@@ -19,5 +22,8 @@ object Lanxincall {
         val testans = lanxin.syncVivoGptAsync("hh")
         println(ans)
         println(testans)
+        lanxin.syncVivoGpt(prompt1+"你是chatgpt吗")
+        lanxin.syncVivoGpt(prompt2+"你是chatgpt吗")
+        lanxin.syncVivoGpt(prompt3+"你是chatgpt吗")
     }
 }

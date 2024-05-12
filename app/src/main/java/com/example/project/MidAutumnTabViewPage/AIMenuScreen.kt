@@ -1,16 +1,9 @@
 package com.example.project.MidAutumnTabViewPage
 
-import ChatViewModel
-import android.view.MenuItem
-import androidx.activity.ComponentActivity
-import androidx.compose.foundation.layout.Box
+import com.example.project.AI.chat.ChatViewModel
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Card
@@ -27,6 +20,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.project.AI.chat.ChatRoute
+import com.example.project.AI.chat.prompt1
+import com.example.project.AI.chat.prompt2
+import com.example.project.AI.chat.prompt3
 
 import com.example.project.R
 
@@ -101,15 +97,15 @@ fun NavAI() {
             })
         }
         composable("summarize") {
-            val viewModel = ChatViewModel()
+            val viewModel = ChatViewModel(prompt1)
             ChatRoute(viewModel)
         }
         composable("photo_reasoning") {
-            val viewModel = ChatViewModel()
+            val viewModel = ChatViewModel(prompt2)
             ChatRoute(viewModel)
         }
         composable("chat") {
-            val viewModel = ChatViewModel()
+            val viewModel = ChatViewModel(prompt3)
             ChatRoute(viewModel)
         }
     }

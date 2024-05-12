@@ -1,5 +1,6 @@
+package com.example.project.AI.chat
+
 import androidx.lifecycle.ViewModel
-import com.example.project.AI.chat.ChatMessage
 import com.example.project.R
 import com.example.project.lanxin
 import kotlinx.coroutines.CoroutineScope
@@ -9,7 +10,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ChatViewModel : ViewModel() {
+class ChatViewModel(private val prompt: String) : ViewModel() {
     private val _chatMessages = MutableStateFlow<List<ChatMessage>>(emptyList())
     val chatMessages: StateFlow<List<ChatMessage>> = _chatMessages.asStateFlow()
 
@@ -20,14 +21,15 @@ class ChatViewModel : ViewModel() {
                 id = newMessageId,
                 text = userInput,
                 isSentByCurrentUser = true,
-                senderAvatar = R.drawable.ic_launcher_foreground // 用户头像资源ID
+                senderAvatar = R.drawable.sushi // 用户头像资源ID
             )
             _chatMessages.value = _chatMessages.value + newMessage
 
             // 模拟网络延迟
             // delay(1000)
 
-            val response = lanxin.syncVivoGpt (userInput)
+            // 使用prompt和userInput组合的字符串调用syncVivoGpt
+            val response = lanxin.syncVivoGpt("$prompt $userInput")
 
             val responseMessage = ChatMessage(
                 id = newMessageId + 1,

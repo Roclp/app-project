@@ -1,13 +1,11 @@
 package com.example.project.AI.chat
 
-import ChatViewModel
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -26,9 +24,7 @@ import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import com.example.project.R
-import com.example.project.lanxin
 
 
 // 假设这是一个模拟的API调用
@@ -164,6 +160,6 @@ fun MessageInput(
 @Preview(showBackground = true)
 @Composable
 fun ChatScreenPreview() {
-    val viewModel = ChatViewModel()
+    val viewModel = ChatViewModel("dfd")
     ChatRoute(viewModel)
 }

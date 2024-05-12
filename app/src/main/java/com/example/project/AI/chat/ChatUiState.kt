@@ -1,7 +1,6 @@
 
 package com.example.project.AI.chat
 
-import ChatViewModel
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
