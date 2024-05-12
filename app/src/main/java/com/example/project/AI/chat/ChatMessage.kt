@@ -3,13 +3,9 @@ package com.example.project.AI.chat
 
 import java.util.UUID
 
-enum class Participant {
-    USER, MODEL, ERROR
-}
-
 data class ChatMessage(
-    val id: String = UUID.randomUUID().toString(),
-    var text: String = "",
-    val participant: Participant = Participant.USER,
-    var isPending: Boolean = false
+    val id: Int,
+    val text: String,
+    val isSentByCurrentUser: Boolean = false,
+    val senderAvatar: Int? = null
 )

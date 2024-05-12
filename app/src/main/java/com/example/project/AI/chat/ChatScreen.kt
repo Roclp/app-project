@@ -1,156 +1,107 @@
-
 package com.example.project.AI.chat
 
-import androidx.compose.foundation.layout.BoxWithConstraints
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
+import ChatViewModel
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ElevatedCard
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModel
 import com.example.project.R
+import com.example.project.lanxin
 
-import kotlinx.coroutines.launch
 
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun ChatRoute(
-    chatViewModel: ChatViewModel = viewModel()
-) {
-    val chatUiState by chatViewModel.uiState.collectAsState()
-    val listState = rememberLazyListState()
-    val coroutineScope = rememberCoroutineScope()
-
-    Scaffold(
-        bottomBar = {
-            MessageInput(
-                onSendMessage = { inputText ->
-                    chatViewModel.sendMessage(inputText)
-                },
-                resetScroll = {
-                    coroutineScope.launch {
-                        listState.scrollToItem(0)
-                    }
-                }
-            )
-        }
-    ) { paddingValues ->
-        Column(
-            modifier = Modifier
-                .padding(paddingValues)
-                .fillMaxSize()
-        ) {
-            // Messages List
-            ChatList(chatUiState.messages, listState)
-        }
-    }
+// 假设这是一个模拟的API调用
+fun syncVivoGpt(query: String): String {
+    // 实际的同步逻辑
+    return "response_from_vivogpt"
 }
+
+
 
 @Composable
 fun ChatList(
     chatMessages: List<ChatMessage>,
-    listState: LazyListState
+    listState: LazyListState,
+    modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        reverseLayout = true,
-        state = listState
+        modifier = modifier,
+        state = listState,
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 72.dp) // 添加内边距
     ) {
-        items(chatMessages.reversed()) { message ->
+        itemsIndexed(chatMessages) { index, message ->
             ChatBubbleItem(message)
         }
     }
 }
 
 @Composable
-fun ChatBubbleItem(
-    chatMessage: ChatMessage
-) {
-    val isModelMessage = chatMessage.participant == Participant.MODEL ||
-            chatMessage.participant == Participant.ERROR
+fun ChatBubbleItem(chatMessage: ChatMessage) {
+    val context = LocalContext.current
+    val isUserMessage = chatMessage.isSentByCurrentUser
 
-    val backgroundColor = when (chatMessage.participant) {
-        Participant.MODEL -> MaterialTheme.colorScheme.primaryContainer
-        Participant.USER -> MaterialTheme.colorScheme.tertiaryContainer
-        Participant.ERROR -> MaterialTheme.colorScheme.errorContainer
-    }
-
-    val bubbleShape = if (isModelMessage) {
-        RoundedCornerShape(4.dp, 20.dp, 20.dp, 20.dp)
-    } else {
-        RoundedCornerShape(20.dp, 4.dp, 20.dp, 20.dp)
-    }
-
-    val horizontalAlignment = if (isModelMessage) {
-        Alignment.Start
-    } else {
-        Alignment.End
-    }
-
-    Column(
-        horizontalAlignment = horizontalAlignment,
+    Card(
         modifier = Modifier
-            .padding(horizontal = 8.dp, vertical = 4.dp)
-            .fillMaxWidth()
+            .padding(14.dp)
+            .widthIn(),
+        shape = RoundedCornerShape(
+            if (isUserMessage) 0.dp else 4.dp,
+            if (isUserMessage) 4.dp else 0.dp
+        ),
+        elevation = CardDefaults.cardElevation(4.dp)
     ) {
-        Text(
-            text = chatMessage.participant.name,
-            style = MaterialTheme.typography.bodySmall,
-            modifier = Modifier.padding(bottom = 4.dp)
-        )
-        Row {
-            if (chatMessage.isPending) {
-                CircularProgressIndicator(
-                    modifier = Modifier
-                        .align(Alignment.CenterVertically)
-                        .padding(all = 8.dp)
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            if (!isUserMessage) {
+                Image(
+                    painter = painterResource(id = chatMessage.senderAvatar ?: R.drawable.ic_launcher_foreground),
+                    contentDescription = stringResource(if (isUserMessage) R.string.chat_label else R.string.chat_label),
+                    modifier = Modifier.size(40.dp)
                 )
             }
-            BoxWithConstraints {
-                Card(
-                    colors = CardDefaults.cardColors(containerColor = backgroundColor),
-                    shape = bubbleShape,
-                    modifier = Modifier.widthIn(0.dp, maxWidth * 0.9f)
-                ) {
-                    Text(
-                        text = chatMessage.text,
-                        modifier = Modifier.padding(16.dp)
-                    )
-                }
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+            ) {
+                Text(
+                    text = chatMessage.text,
+                    modifier = Modifier.padding(start = if (!isUserMessage) 8.dp else 0.dp),
+                    textAlign = if (isUserMessage) TextAlign.End else TextAlign.Start
+                )
+            }
+
+            if (isUserMessage) {
+                Image(
+                    painter = painterResource(id = chatMessage.senderAvatar ?: R.drawable.ic_launcher_foreground),
+                    contentDescription = stringResource(R.string.chat_label),
+                    modifier = Modifier.size(40.dp).clickable { /* Handle click */ }
+                )
             }
         }
     }
@@ -159,60 +110,60 @@ fun ChatBubbleItem(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MessageInput(
+    viewModel: ChatViewModel,
     onSendMessage: (String) -> Unit,
-    resetScroll: () -> Unit = {}
+    currentMessage: String,
+    modifier: Modifier
 ) {
-    var userMessage by rememberSaveable { mutableStateOf("") }
+    var userMessage by rememberSaveable { mutableStateOf(currentMessage) }
 
     ElevatedCard(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(16.dp)
     ) {
         Row(
-            modifier = Modifier
-                .padding(16.dp)
-                .fillMaxWidth()
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)
         ) {
             OutlinedTextField(
+                modifier = Modifier.weight(0.85f).padding(end = 8.dp),
                 value = userMessage,
-                label = { Text(stringResource(R.string.chat_label)) },
                 onValueChange = { userMessage = it },
+                label = { Text(stringResource(R.string.chat_label)) },
+                keyboardActions = KeyboardActions(onSend = {
+                    if (userMessage.isNotBlank()) {
+                        onSendMessage(userMessage.trim())
+                        userMessage = "" // 清空输入
+                    }
+                }),
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,
+                    imeAction = ImeAction.Send
                 ),
-                modifier = Modifier
-                    .align(Alignment.CenterVertically)
-                    .fillMaxWidth()
-                    .weight(0.85f)
+                singleLine = true
             )
             IconButton(
                 onClick = {
                     if (userMessage.isNotBlank()) {
-                        onSendMessage(userMessage)
-                        userMessage = ""
-                        resetScroll()
+                        onSendMessage(userMessage.trim())
+                        userMessage = "" // 清空输入
                     }
                 },
-                modifier = Modifier
-                    .padding(start = 16.dp)
-                    .align(Alignment.CenterVertically)
-                    .fillMaxWidth()
-                    .weight(0.15f)
+                modifier = Modifier.weight(0.15f).padding(start = 8.dp)
             ) {
                 Icon(
-                    Icons.Default.Send,
+                    imageVector = Icons.Default.Send,
                     contentDescription = stringResource(R.string.action_send),
-                    modifier = Modifier
+                    tint = MaterialTheme.colorScheme.primary
                 )
             }
         }
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 fun ChatScreenPreview() {
-    MessageInput(onSendMessage = { /* 这里可以添加一个虚拟的发送消息函数 */ }) {
-        // 这里可以添加一个虚拟的重置滚动函数
-    }
+    val viewModel = ChatViewModel()
+    ChatRoute(viewModel)
 }

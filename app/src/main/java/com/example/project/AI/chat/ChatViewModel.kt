@@ -1,85 +1,41 @@
-/*
- * Copyright 2023 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-package com.example.project.AI.chat
-
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.example.project.AI.chat.ChatMessage
+import com.example.project.R
+import com.example.project.lanxin
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class ChatViewModel(
-    generativeModel: GenerativeModel
-) : ViewModel() {
-    private val chat = generativeModel.startChat(
-        history = listOf(
-            content(role = "user") { text("Hello, I have 2 dogs in my house.") },
-            content(role = "model") { text("Great to meet you. What would you like to know?") }
-        )
-    )
+class ChatViewModel : ViewModel() {
+    private val _chatMessages = MutableStateFlow<List<ChatMessage>>(emptyList())
+    val chatMessages: StateFlow<List<ChatMessage>> = _chatMessages.asStateFlow()
 
-    private val _uiState: MutableStateFlow<ChatUiState> =
-        MutableStateFlow(ChatUiState(chat.history.map { content ->
-            // Map the initial messages
-            ChatMessage(
-                text = content.parts.first().asTextOrNull() ?: "",
-                participant = if (content.role == "user") Participant.USER else Participant.MODEL,
-                isPending = false
+    fun sendMessage(userInput: String) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val newMessageId = (_chatMessages.value.maxByOrNull { it.id }?.id ?: 0) + 1
+            val newMessage = ChatMessage(
+                id = newMessageId,
+                text = userInput,
+                isSentByCurrentUser = true,
+                senderAvatar = R.drawable.ic_launcher_foreground // 用户头像资源ID
             )
-        }))
-    val uiState: StateFlow<ChatUiState> =
-        _uiState.asStateFlow()
+            _chatMessages.value = _chatMessages.value + newMessage
 
+            // 模拟网络延迟
+            // delay(1000)
 
-    fun sendMessage(userMessage: String) {
-        // Add a pending message
-        _uiState.value.addMessage(
-            ChatMessage(
-                text = userMessage,
-                participant = Participant.USER,
-                isPending = true
+            val response = lanxin.syncVivoGpt (userInput)
+
+            val responseMessage = ChatMessage(
+                id = newMessageId + 1,
+                text = response,
+                isSentByCurrentUser = false,
+                senderAvatar = R.drawable.ic_launcher_foreground // 机器人头像资源ID
             )
-        )
-
-        viewModelScope.launch {
-            try {
-                val response = chat.sendMessage(userMessage)
-
-                _uiState.value.replaceLastPendingMessage()
-
-                response.text?.let { modelResponse ->
-                    _uiState.value.addMessage(
-                        ChatMessage(
-                            text = modelResponse,
-                            participant = Participant.MODEL,
-                            isPending = false
-                        )
-                    )
-                }
-            } catch (e: Exception) {
-                _uiState.value.replaceLastPendingMessage()
-                _uiState.value.addMessage(
-                    ChatMessage(
-                        text = e.localizedMessage,
-                        participant = Participant.ERROR
-                    )
-                )
-            }
+            _chatMessages.value = _chatMessages.value + responseMessage
         }
     }
 }
