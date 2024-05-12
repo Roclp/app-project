@@ -1,15 +1,16 @@
 <resources>
     <string name="app_name">Project</string>
     <string name="action_go">Go</string>
-    <string name="action_try">Try it</string>
+    <string name="action_try">试试看</string>
 
     <!-- Menu strings -->
-    <string name="menu_summarize_title">Generate text from text-only input</string>
-    <string name="menu_summarize_description">Sample app that summarizes text</string>
-    <string name="menu_reason_title">Generate text from text-and-image input (multimodal)</string>
-    <string name="menu_reason_description">Sample app for uploading images and asking about them</string>
-    <string name="menu_chat_title">Build multi-turn conversations (chat)</string>
-    <string name="menu_chat_description">Sample app demonstrating a conversational UI</string>
+<!--    "且喜人间好时节", "月是故乡明", "小饼如嚼月"-->
+    <string name="menu_summarize_title">且喜人间好时节</string>
+    <string name="menu_summarize_description">————畅聊中秋起源与发展，故事与文化</string>
+    <string name="menu_reason_title">月是故乡明</string>
+    <string name="menu_reason_description">————创作中秋月明的诗词歌赋</string>
+    <string name="menu_chat_title">小饼如嚼月</string>
+    <string name="menu_chat_description">————品味各地中秋特色美食</string>
 
     <!-- Summarize sample strings -->
     <string name="summarize_label">Text</string>
@@ -21,7 +22,7 @@
     <string name="add_image">Add Image</string>
 
     <!-- Chat sample strings -->
-    <string name="chat_label">Message</string>
-    <string name="action_send">Send</string>
+    <string name="chat_label">请输入内容</string>
+    <string name="action_send">发送</string>
 
 </resources>

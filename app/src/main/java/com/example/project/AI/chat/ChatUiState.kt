@@ -31,7 +31,7 @@ class ChatUiState(
     fun replaceLastPendingMessage() {
         val lastMessage = _messages.lastOrNull()
         lastMessage?.let {
-            val newMessage = lastMessage.apply { isPending = false }
+            val newMessage = lastMessage.apply { var isPending = false }
             _messages.removeLast()
             _messages.add(newMessage)
         }
